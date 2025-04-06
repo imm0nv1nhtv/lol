@@ -1,25 +1,26 @@
 #!/bin/bash
-# python fix
-wget -O python.tar.gz https://github.com/astral-sh/python-build-standalone/releases/download/20250317/cpython-3.10.16+20250317-x86_64-unknown-linux-gnu-install_only.tar.gz
-tar -xvf python.tar.gz
-# delete
-rm python.tar.gz
-export PATH="$HOME/python/bin:$PATH"
 set -eo pipefail
+# Some hosting doesn't have wget so this will be used
 curl -O https://raw.githubusercontent.com/pkgforge-dev/Static-Binaries/refs/heads/main/wget/wget_busybox_amd_x86_64_gcc_Linux
 chmod +x ./wget_busybox_amd_x86_64_gcc_Linux
 echo "Installing uDocker..."
 ./wget_busybox_amd_x86_64_gcc_Linux https://github.com/indigo-dc/udocker/releases/download/1.3.17/udocker-1.3.17.tar.gz
 tar zxvf udocker-1.3.17.tar.gz
-export PATH=`pwd`/udocker-1.3.17/udocker:$PATH
+# python fix
+./wget_busybox_amd_x86_64_gcc_Linux -O python.tar.gz https://github.com/astral-sh/python-build-standalone/releases/download/20250317/cpython-3.10.16+20250317-x86_64-unknown-linux-gnu-install_only.tar.gz
+tar -xvf python.tar.gz
+# delete
+rm python.tar.gz
+export PATH=`pwd`/udocker-1.3.17/udocker:$HOME/python/bin:$PATH
 export FILEDIR=`pwd`/udocker-1.3.17/udocker
+# i love "zsh"
 ./wget_busybox_amd_x86_64_gcc_Linux -O $FILEDIR/zsh https://proot.gitlab.io/proot/bin/proot
 chmod +x $FILEDIR/zsh
 mv $FILEDIR/udocker $FILEDIR/op
 # udocker being udocker..
 sed -i '1s|#!/usr/bin/env python|#!/usr/bin/env python3|' `pwd`/udocker-1.3.17/udocker/op
 op install
-# Setting execmode to runc
+# Setting execmode to proot
 export UDOCKER_DEFAULT_EXECUTION_MODE=P1
 export UDOCKER_USE_PROOT_EXECUTABLE=$(which zsh)
 echo "Installing the Ubuntu container..."
