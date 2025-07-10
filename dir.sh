@@ -12,7 +12,7 @@ mv $FILEDIR/udocker $FILEDIR/op
 # udocker being udocker..
 sed -i '1s|#!/usr/bin/env python|#!/usr/bin/env python3|' `pwd`/udocker-1.3.17/udocker/op
 op install
-# Setting execmode to runc
+# Setting execmode to proot
 export UDOCKER_DEFAULT_EXECUTION_MODE=P1
 export UDOCKER_USE_PROOT_EXECUTABLE=$(which zsh)
 echo "Installing the Debian container..."
